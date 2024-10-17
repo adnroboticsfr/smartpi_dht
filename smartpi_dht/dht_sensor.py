@@ -52,8 +52,11 @@ class DHTSensor:
         self.gpio_mem.seek(offset)
         return self.gpio.unpack(self.gpio_mem.read(4))[0]
 
-    def _write_reg(self, offset, value):
-        self.gpio_mem.seek(offset)
+    def _write_reg(self, reg_offset, value):
+        if self.pin < 0 or self.pin > 31:  # Adjust based on the valid range for your platform
+            raise ValueError(f"Invalid GPIO pin: {self.pin}")
+
+        print(f"Writing to reg {reg_offset}, value: {value}")  # Debugging output
         self.gpio_mem.write(self.gpio.pack(value))
 
     def _read_sensor_data(self):
