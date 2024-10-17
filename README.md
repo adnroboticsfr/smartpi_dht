@@ -61,7 +61,7 @@ To install the `smartpi_dht` package, follow these steps:
    Clone the package repository (if hosted on GitHub, for example):
 
    ```bash
-   git clone https://github.com/yourusername/smartpi_dht.git
+   git clone https://github.com/adnroboticsfr/smartpi_dht.git
    cd smartpi_dht
    ```
 
