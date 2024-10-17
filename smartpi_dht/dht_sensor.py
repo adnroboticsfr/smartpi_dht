@@ -84,8 +84,11 @@ class DHTSensor:
 
         print("Data read complete:", data)  # Debugging output
 
+        # Adding debug messages for temperature and humidity calculation
         humidity = self._bits_to_bytes(data[0:8]) + self._bits_to_bytes(data[8:16]) * 0.1
         temperature = self._bits_to_bytes(data[16:24]) + self._bits_to_bytes(data[24:32]) * 0.1
+
+        print(f"Calculated humidity: {humidity}, temperature: {temperature}")  # Debugging output
 
         checksum = self._bits_to_bytes(data[32:40])
         if checksum == ((self._bits_to_bytes(data[0:8]) + 
@@ -128,8 +131,8 @@ if __name__ == "__main__":
             else:
                 print('Failed to retrieve data from the sensor')
 
-            # Attendre 2 secondes avant la prochaine lecture
-            time.sleep(2)
+            # Attendre 5 secondes avant la prochaine lecture pour voir si cela aide
+            time.sleep(5)
 
     except KeyboardInterrupt:
         print("Programme arrêté.")
