@@ -1,13 +1,13 @@
 # SmartPi DHT Sensor Package
 
-The `smartpi_dht` package provides an easy-to-use interface for reading data from DHT11/DHT22 temperature and humidity sensors connected to a Smart Pi One. This package wraps around the `Adafruit_DHT` library and provides additional utility functions for logging, validation, and formatting sensor data.
+The `smartpi_dht` package provides a direct interface for reading data from DHT11/DHT22 temperature and humidity sensors connected to a Smart Pi One (or Raspberry Pi). This package interacts directly with GPIO registers, without relying on external libraries like `RPi.GPIO` or `Adafruit_DHT`. It also includes additional utility functions for logging, validation, and formatting sensor data.
 
 ## Features
 
 - Read temperature and humidity from DHT11 or DHT22 sensors.
 - Continuous sensor readings with customizable intervals.
 - Utility functions for validation and logging.
-- Simple setup and usage for Smart Pi One.
+- No external library dependencies.
 
 ---
 
@@ -32,7 +32,6 @@ The `smartpi_dht` package provides an easy-to-use interface for reading data fro
 - DHT11 or DHT22 sensor.
 - Python 3.6+.
 - Jumper wires and a 10kΩ resistor.
-- `Adafruit_DHT` library.
 
 ---
 
@@ -48,17 +47,9 @@ To install the `smartpi_dht` package, follow these steps:
    sudo apt-get install python3 python3-pip
    ```
 
-2. **Install the package dependencies**:
+2. **Download and install the `smartpi_dht` package**:
 
-   Make sure you have `pip` installed and use it to install `Adafruit_DHT`:
-
-   ```bash
-   pip3 install Adafruit_DHT
-   ```
-
-3. **Download and install the `smartpi_dht` package**:
-
-   Clone the package repository (if hosted on GitHub, for example):
+   Clone the package repository:
 
    ```bash
    git clone https://github.com/adnroboticsfr/smartpi_dht.git
@@ -170,20 +161,13 @@ This function will validate the readings and log the data in a user-friendly for
   sudo python3 your_script.py
   ```
 
+- **Timing Issues**: The DHT sensor uses precise timing. If you experience unreliable readings, check that the system is not overloaded or experiencing high CPU usage.
+
 ---
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ```
 
-### Notes on the Structure:
-
-- **Installation**: Provides step-by-step instructions for setting up the package on the Smart Pi One, including dependencies like `Adafruit_DHT`.
-- **Uninstallation**: Easy removal using `pip3 uninstall`.
-- **Usage**: Provides both basic and continuous sensor reading examples, demonstrating how to initialize the sensor and retrieve data.
-- **Wiring Instructions**: Describes how to physically connect the DHT sensor to the Smart Pi One, including the necessary pull-up resistor.
-- **Utilities**: Mentions the validation and logging utilities in `utils.py`, which will help with error handling and logging sensor data.
-- **Troubleshooting**: A basic section for common issues encountered during sensor usage.
 
