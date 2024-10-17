@@ -60,14 +60,17 @@ class DHTSensor:
         self.gpio_mem.write(self.gpio.pack(value))
 
     def _read_sensor_data(self):
+        print("Setting GPIO pin as output and clearing...")
         self._gpio_set_mode_output()
         self._gpio_clear_pin()
-        time.sleep(0.018)
+        time.sleep(0.020)  # 20 ms low signal
 
+        print("Setting GPIO pin as input...")
         self._gpio_set_mode_input()
-        time.sleep(0.02)
+        time.sleep(0.040)  # Wait for sensor response
 
         data = []
+        print("Reading data from the sensor...")
         for i in range(40):
             while self._gpio_read_pin() == 0:
                 pass
@@ -76,16 +79,22 @@ class DHTSensor:
             while self._gpio_read_pin() == 1:
                 pass
             duration = time.time() - start_time
+            
             data.append(1 if duration > 0.00005 else 0)
+
+        print("Data read complete:", data)  # Debugging output
 
         humidity = self._bits_to_bytes(data[0:8]) + self._bits_to_bytes(data[8:16]) * 0.1
         temperature = self._bits_to_bytes(data[16:24]) + self._bits_to_bytes(data[24:32]) * 0.1
 
         checksum = self._bits_to_bytes(data[32:40])
-        if checksum == ((self._bits_to_bytes(data[0:8]) + self._bits_to_bytes(data[8:16]) +
-                         self._bits_to_bytes(data[16:24]) + self._bits_to_bytes(data[24:32])) & 0xFF):
+        if checksum == ((self._bits_to_bytes(data[0:8]) + 
+                         self._bits_to_bytes(data[8:16]) + 
+                         self._bits_to_bytes(data[16:24]) + 
+                         self._bits_to_bytes(data[24:32])) & 0xFF):
             return temperature, humidity
         else:
+            print("Checksum error: invalid data received")  # Debugging output
             return None, None
 
     @staticmethod
@@ -101,3 +110,28 @@ class DHTSensor:
     def close(self):
         self.gpio_mem.close()
         os.close(self.mem_fd)
+
+
+# Utilisation du capteur DHT
+if __name__ == "__main__":
+    pin = 12  # GPIOA12 (vous pouvez changer ce numéro en fonction de votre configuration)
+    sensor = DHTSensor(pin=pin)
+
+    try:
+        while True:
+            # Lire la température et l'humidité
+            temperature, humidity = sensor.read()
+            
+            # Vérifiez si les valeurs sont valides
+            if temperature is not None and humidity is not None:
+                print(f'Temp={temperature:.1f}°C Humidity={humidity:.1f}%')
+            else:
+                print('Failed to retrieve data from the sensor')
+
+            # Attendre 2 secondes avant la prochaine lecture
+            time.sleep(2)
+
+    except KeyboardInterrupt:
+        print("Programme arrêté.")
+    finally:
+        sensor.close()
